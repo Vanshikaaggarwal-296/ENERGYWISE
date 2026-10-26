@@ -60,3 +60,34 @@ if data:
 else:
     print("No electricity data available.")
 
+
+# Detect unusually high daily consumption
+if len(data) >= 2:
+    average_usage = sum(
+        record["consumption_kwh"] for record in data
+    ) / len(data)
+
+    threshold = average_usage * 1.2
+
+    print("\n===== UNUSUAL USAGE CHECK =====")
+    print("Average Daily Usage:", round(average_usage, 2), "kWh")
+
+    unusual_days = [
+        record for record in data
+        if record["consumption_kwh"] > threshold
+    ]
+
+    if unusual_days:
+        for record in unusual_days:
+            print(
+                "Unusually High Usage:",
+                record["date"],
+                "-",
+                record["consumption_kwh"],
+                "kWh"
+            )
+    else:
+        print("No unusually high usage detected.")
+else:
+    print("Not enough data to detect unusual usage.")
+
