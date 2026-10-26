@@ -27,3 +27,36 @@ print("Total Consumption:", total_consumption, "kWh")
 print("Number of Days:", len(data))
 print("Daily Average:", round(daily_average, 2), "kWh")
 print("Estimated Cost: Rs.", estimated_bill)
+
+# Find the day with the highest electricity consumption
+if data:
+    highest_day = max(
+        data,
+        key=lambda record: record["consumption_kwh"]
+    )
+
+    print("\n===== DAILY CONSUMPTION INSIGHTS =====")
+
+    print(
+        "Highest Consumption Day:",
+        highest_day["date"]
+    )
+
+    print(
+        "Highest Daily Usage:",
+        highest_day["consumption_kwh"],
+        "kWh"
+    )
+
+    print("\nDaily Usage Report:")
+
+    for record in data:
+        print(
+            record["date"],
+            "->",
+            record["consumption_kwh"],
+            "kWh"
+        )
+else:
+    print("No electricity data available.")
+
