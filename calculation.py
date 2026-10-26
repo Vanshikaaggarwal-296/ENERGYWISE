@@ -30,3 +30,17 @@ units, amount = calculate_savings(520, 478, 7)
 print("Electricity Units Saved:", units, "kWh")
 print("Estimated Money Saved: ₹", amount)
 
+
+def calculate_savings_percentage(baseline, new_consumption):
+    if baseline <= 0:
+        return 0
+
+    saved_units = baseline - new_consumption
+    percentage = (saved_units / baseline) * 100
+
+    return round(percentage, 2)
+
+# Test 3: Calculate savings percentage
+percentage = calculate_savings_percentage(520, 478)
+
+print("Electricity Savings Percentage:", percentage, "%")
