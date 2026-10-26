@@ -1,35 +1,34 @@
+
 from recommendation import get_recommendations
 from ranking import rank_recommendations
 
-# Test 1: High electricity consumption
-recommendations = get_recommendations(520)
 
-assert len(recommendations) > 0
+# Test 1: Generate recommendations
+recommendations = get_recommendations(520, 7)
+
+assert len(recommendations) == 2
 print("Recommendation generation: PASS")
 
-# Test 2: Check required information
-for item in recommendations:
-    assert "title" in item
-    assert "message" in item
-    assert "saving_score" in item
-    assert "ease_score" in item
 
-print("Recommendation details: PASS")
+# Test 2: Check savings calculations
+assert recommendations[0]["estimated_units_saved"] == 26.0
+assert recommendations[0]["estimated_money_saved"] == 182.0
+print("Savings calculation: PASS")
+
 
 # Test 3: Check ranking
 ranked = rank_recommendations(recommendations)
 
-scores = [item["rank_score"] for item in ranked]
-assert scores == sorted(scores, reverse=True)
-
+assert ranked[0]["estimated_money_saved"] >= ranked[1]["estimated_money_saved"]
 print("Recommendation ranking: PASS")
 
-# Display final recommendations
-print("\nEnergyWise Recommendations:")
+
+# Display final ranking
+print("\n===== TEST RESULTS =====")
 
 for item in ranked:
     print(
         item["title"],
-        "| Score:",
-        round(item["rank_score"], 2)
+        "| Estimated Savings: Rs.",
+        item["estimated_money_saved"]
     )
