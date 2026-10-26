@@ -1,34 +1,77 @@
 
+import unittest
+
 from recommendation import get_recommendations
 from ranking import rank_recommendations
 
 
-# Test 1: Generate recommendations
-recommendations = get_recommendations(520, 7)
+class TestRecommendations(unittest.TestCase):
 
-assert len(recommendations) == 2
-print("Recommendation generation: PASS")
+    def test_recommendation_generation(self):
+        recommendations = get_recommendations(
+            520, 7, 5, 2
+        )
+
+        self.assertEqual(len(recommendations), 2)
+
+    def test_general_savings_calculation(self):
+        recommendations = get_recommendations(
+            520, 7, 10, 2
+        )
+
+        general = recommendations[0]
+
+        self.assertEqual(
+            general["estimated_units_saved"], 52.0
+        )
+
+        self.assertEqual(
+            general["estimated_money_saved"], 364.0
+        )
+
+    def test_standby_savings_calculation(self):
+        recommendations = get_recommendations(
+            520, 7, 5, 4
+        )
+
+        standby = recommendations[1]
+
+        self.assertEqual(
+            standby["estimated_units_saved"], 20.8
+        )
+
+        self.assertEqual(
+            standby["estimated_money_saved"], 145.6
+        )
+
+    def test_ranking(self):
+        recommendations = get_recommendations(
+            520, 7, 5, 2
+        )
+
+        ranked = rank_recommendations(recommendations)
+
+        self.assertEqual(ranked[0]["priority"], "High")
+        self.assertEqual(ranked[1]["priority"], "Medium")
+
+        self.assertGreaterEqual(
+            ranked[0]["estimated_money_saved"],
+            ranked[1]["estimated_money_saved"]
+        )
+
+    def test_invalid_baseline(self):
+        with self.assertRaises(ValueError):
+            get_recommendations(0, 7, 5, 2)
+
+    def test_invalid_tariff(self):
+        with self.assertRaises(ValueError):
+            get_recommendations(520, -1, 5, 2)
+
+    def test_invalid_percentage(self):
+        with self.assertRaises(ValueError):
+            get_recommendations(520, 7, 101, 2)
 
 
-# Test 2: Check savings calculations
-assert recommendations[0]["estimated_units_saved"] == 26.0
-assert recommendations[0]["estimated_money_saved"] == 182.0
-print("Savings calculation: PASS")
+if __name__ == "__main__":
+    unittest.main()
 
-
-# Test 3: Check ranking
-ranked = rank_recommendations(recommendations)
-
-assert ranked[0]["estimated_money_saved"] >= ranked[1]["estimated_money_saved"]
-print("Recommendation ranking: PASS")
-
-
-# Display final ranking
-print("\n===== TEST RESULTS =====")
-
-for item in ranked:
-    print(
-        item["title"],
-        "| Estimated Savings: Rs.",
-        item["estimated_money_saved"]
-    )
